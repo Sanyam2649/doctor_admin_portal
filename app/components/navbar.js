@@ -3,11 +3,16 @@ import Image from "next/image";
 import { Bell, Mic, Menu } from "lucide-react";
 import { useState, useEffect } from "react";
 
-export default function Navbar() {
+export default function Navbar({ onToggleSidebar }) {
   const [user, setUser] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState([]);
+
+  // Debug: Check if prop is received
+  useEffect(() => {
+    console.log('Navbar mounted, onToggleSidebar function:', !!onToggleSidebar);
+  }, [onToggleSidebar]);
 
   // Get user data from localStorage (set during login)
   useEffect(() => {
@@ -36,6 +41,16 @@ export default function Navbar() {
       { id: 3, text: "Patient message received", time: "2 hours ago", read: true }
     ]);
   }, []);
+
+  const handleMenuClick = () => {
+    console.log('Menu button clicked');
+    if (onToggleSidebar && typeof onToggleSidebar === 'function') {
+      onToggleSidebar();
+    } else {
+      console.error('onToggleSidebar is not a function or not provided');
+      console.log('onToggleSidebar value:', onToggleSidebar);
+    }
+  };
 
   const handleAskAI = () => {
     const questions = [
@@ -80,16 +95,19 @@ export default function Navbar() {
     <nav className="w-full flex items-center justify-between px-3 xs:px-4 sm:px-6 py-2 sm:py-3 bg-white shadow-sm border-b border-gray-200">
       {/* Left Side - Menu Button */}
       <div className="flex items-center">
-        <button className="focus:outline-none p-1 sm:p-2">
+        <button 
+          className="focus:outline-none p-1 sm:p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          onClick={handleMenuClick} // Use the new handler
+        >
           <span className="flex flex-col space-y-1">
-            <span className="block w-5 sm:w-6 h-0.5 sm:h-1 bg-gray-700 rounded"></span>
-            <span className="block w-4 sm:w-4 h-0.5 sm:h-1 bg-gray-700 rounded"></span>
-            <span className="block w-3 sm:w-3 h-0.5 sm:h-1 bg-gray-700 rounded"></span>
+            <span className="block w-5 sm:w-6 h-0.5 sm:h-1 bg-gray-700 rounded transition-all"></span>
+            <span className="block w-4 sm:w-4 h-0.5 sm:h-1 bg-gray-700 rounded transition-all"></span>
+            <span className="block w-3 sm:w-3 h-0.5 sm:h-1 bg-gray-700 rounded transition-all"></span>
           </span>
         </button>
       </div>
 
-      {/* Right Side - Actions & User Menu */}
+      {/* Rest of your navbar code remains the same */}
       <div className="flex items-center space-x-2 xs:space-x-3 sm:space-x-4">
         {/* Ask AI Button */}
         <button 

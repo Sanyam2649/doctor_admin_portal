@@ -349,22 +349,24 @@ function PatientDetail({ data, onClose }) {
 
 function Page() {
   const [selected, setSelected] = useState(null);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const handleNewRecord = () => {
     alert('Creating new patient record. This would open a new record form in a real application.');
   };
 
-  const handleSearch = (e) => {
-    // Basic search functionality
-    const searchTerm = e.target.value.toLowerCase();
-    console.log('Searching for:', searchTerm);
-    // In a real app, you would filter the patients array here
+      const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const closeSidebar = () => {
+    setIsSidebarOpen(false);
   };
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      <Sidebar />
+      <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
       <div className="flex-1 flex flex-col min-w-0">
-        <Navbar />
+        <Navbar onToggleSidebar={toggleSidebar} />
         {!selected ? (
           <main className="p-4 sm:p-6 lg:p-8 bg-[#DEDEDE]">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">

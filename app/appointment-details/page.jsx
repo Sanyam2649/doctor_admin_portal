@@ -72,27 +72,31 @@ const DiagnosisIcon = () => (
 
 function Page() {
   const [appointment, setAppointment] = useState(null);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
-    // Get appointment data from localStorage
     const storedAppointment = localStorage.getItem('currentAppointment');
     if (storedAppointment) {
       setAppointment(JSON.parse(storedAppointment));
     }
   }, []);
 
-  const handleInputChange = (field, value) => {
-    const updatedAppointment = { ...appointment, [field]: value };
-    setAppointment(updatedAppointment);
-    localStorage.setItem('currentAppointment', JSON.stringify(updatedAppointment));
+       const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const closeSidebar = () => {
+    setIsSidebarOpen(false);
   };
 
   if (!appointment) {
     return (
       <div className="flex min-h-screen bg-gray-50">
-        <Sidebar />
+              <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
+
         <div className="flex-1 flex flex-col">
-          <Navbar />
+                  <Navbar onToggleSidebar={toggleSidebar} />
+
           <main className="p-6 md:p-8 bg-[#DEDEDE] flex items-center justify-center">
             <div className="text-center">
               <h2 className="text-xl font-semibold text-gray-800">No appointment data found</h2>

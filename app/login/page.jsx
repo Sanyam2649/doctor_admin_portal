@@ -80,35 +80,16 @@ const Login = () => {
   return (
     <div className="min-h-screen flex flex-col lg:flex-row bg-white">
       {/* Image Section - Hidden on mobile, visible on medium screens and up */}
-      <div className="hidden sm:flex lg:w-1/2 items-center justify-center p-4 bg-gray-50">
-        <div className="w-full h-full flex items-center justify-center">
-          <Image
-            src={doctorPic}
-            alt="Doctor illustration"
-            width={500}
-            height={400}
-            priority
-            className="object-contain w-auto h-auto max-w-full max-h-[70vh] lg:max-h-[80vh]"
-            style={{ 
-              maxWidth: 'min(100%, 500px)',
-              maxHeight: 'min(70vh, 400px)'
-            }}
-          />
-        </div>
-      </div>
-
-      {/* Mobile Image - Only show on very small screens if needed */}
-      <div className="sm:hidden flex justify-center pt-6 pb-2 bg-gray-50">
-        <Image
-          src={doctorPic}
-          alt="Doctor illustration"
-          width={200}
-          height={150}
-          priority
-          className="object-contain"
-        />
-      </div>
-
+        <div className="md:flex md:w-1/2 items-center justify-center p-4">
+                  <Image
+                    src={doctorPic}
+                    alt="Doctor illustration"
+                    width={600}
+                    height={500}
+                    priority
+                    className="object-contain max-w-full max-h-full"
+                  />
+                </div>
       {/* Form Section - Full width on mobile, half on desktop */}
       <div className="flex-1 flex items-center justify-center p-4 xs:p-6 sm:p-8 lg:p-12">
         <div className="w-full max-w-[400px] mx-auto">
@@ -182,7 +163,7 @@ const Login = () => {
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  placeholder="••••••••"
+                  placeholder="•••• •••• ••••"
                   className="w-full outline-none bg-transparent tracking-widest text-base sm:text-lg placeholder-gray-400"
                   required
                 />

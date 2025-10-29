@@ -24,6 +24,7 @@ function Page() {
   const [dragActive, setDragActive] = useState(false);
   const [appointment, setAppointment] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     // Get appointment data from localStorage
@@ -33,6 +34,14 @@ function Page() {
     }
   }, []);
 
+       const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const closeSidebar = () => {
+    setIsSidebarOpen(false);
+  };
+  
   const handleDrag = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -96,9 +105,9 @@ function Page() {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      <Sidebar />
+      <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
       <div className="flex-1 flex flex-col">
-        <Navbar />
+        <Navbar onToggleSidebar={toggleSidebar} />
         <main className="p-4 sm:p-6 lg:p-8 bg-[#E8EEF3]">
           {/* Header Section */}
           <div className="p-2 mb-4 sm:mb-6">
