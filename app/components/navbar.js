@@ -192,14 +192,12 @@ export default function Navbar({ onToggleSidebar }) {
                 </span>
               )}
             </div>
-            
-            {/* User name - hidden on mobile, shown on small tablets and up */}
             <span className="text-gray-800 font-medium text-xs xs:text-sm hidden xs:block">
               {user?.name || 'User'}
             </span>
             
             <svg
-              className="w-3 h-3 xs:w-4 xs:h-4 text-gray-600 hidden xs:block"
+              className="w-3 h-3 xs:w-4 xs:h-4 text-gray-600  xs:block"
               fill="none"
               stroke="currentColor"
               strokeWidth={2}
