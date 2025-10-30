@@ -92,21 +92,21 @@ const Sidebar = ({ isOpen, onClose }) => {
                 key={item.id}
                 onClick={() => handleItemClick(item)}
                 className={`
-                  flex items-center w-full px-4 py-3 rounded-lg transition-all duration-200
+                  flex items-center w-full px-4 py-3
                   ${isActive 
-                    ? 'bg-[#2EB4B4]  border border-blue-200 shadow-sm' 
+                    ? 'text-[#2EB4B4]  border-l-4 border-[#2EB4B4] shadow-sm' 
                     : 'hover:bg-gray-50 border border-transparent'
                   }
                 `}
               >
                 <IconComponent 
                   className={`w-5 h-5 mr-3 ${
-                    isActive ? 'text-white' : 'text-gray-500'
+                    isActive ? 'text-[#2EB4B4]' : 'text-gray-500'
                   }`} 
                 />
                 <span className={`
                   font-medium flex-1 text-left
-                  ${isActive ? 'text-white font-semibold' : 'text-gray-700'}
+                  ${isActive ? 'text-[#2EB4B4] font-semibold' : 'text-gray-700'}
                 `}>
                   {item.label}
                 </span>
