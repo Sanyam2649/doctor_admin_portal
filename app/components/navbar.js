@@ -1,9 +1,11 @@
-import doctorPreview from "@/public/doctor-preview.png";
+'use client';
 import Image from "next/image";
 import { Bell, Mic, Menu } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useRouter } from 'next/navigation';
 
 export default function Navbar({ onToggleSidebar }) {
+  const router = useRouter();
   const [user, setUser] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -80,8 +82,12 @@ export default function Navbar({ onToggleSidebar }) {
 
   const handleLogout = () => {
     localStorage.removeItem('user');
-    window.location.href = '/login';
+    router.push('/login');
   };
+  
+  const handleAppointment = () => {
+    router.push('./appointments')
+  }
 
   const markAllAsRead = () => {
     setNotifications(prev => 
@@ -92,7 +98,7 @@ export default function Navbar({ onToggleSidebar }) {
   const unreadNotificationsCount = notifications.filter(notif => !notif.read).length;
 
   return (
-    <nav className="w-full flex items-center justify-between px-3 xs:px-4 sm:px-6 py-2 sm:py-3 bg-white shadow-sm border-b border-gray-200">
+    <nav className="w-full flex items-center justify-between px-3 xs:px-4 sm:px-6 py-2 sm:py-3 bg-white">
       {/* Left Side - Menu Button */}
       <div className="flex items-center">
         <button 
@@ -134,7 +140,9 @@ export default function Navbar({ onToggleSidebar }) {
 
           {/* Notifications Dropdown */}
           {showNotifications && (
-            <div className="absolute right-0 mt-2 w-72 xs:w-80 sm:w-96 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+            <div className="    absolute sm:right-0 mt-2
+    w-72 sm:w-96 bg-white rounded-lg shadow-lg border border-gray-200 z-50
+    left-1/2 -translate-x-1/2 sm:left-auto sm:translate-x-0">
               <div className="p-3 xs:p-4 border-b border-gray-200">
                 <h3 className="font-semibold text-gray-800 text-sm xs:text-base">Notifications</h3>
               </div>
@@ -172,70 +180,75 @@ export default function Navbar({ onToggleSidebar }) {
 
         {/* User avatar and dropdown */}
         <div className="relative">
-          <button 
-            onClick={() => setShowDropdown(!showDropdown)}
-            className="flex items-center space-x-1 xs:space-x-2 p-1 xs:p-2 rounded-lg hover:bg-gray-100 transition-colors"
-          >
-            {/* User Avatar with fallback to initials */}
-            <div className="w-7 h-7 xs:w-8 xs:h-8 sm:w-10 sm:h-10 rounded-full bg-[#2EB4B4] flex items-center justify-center border-2 border-white shadow">
-              {user?.image ? (
-                <Image
-                  src={user.image}
-                  alt={user?.name || 'User'}
-                  width={40}
-                  height={40}
-                  className="rounded-full object-cover"
-                />
-              ) : (
-                <span className="text-white font-semibold text-xs xs:text-sm sm:text-base">
-                  {getUserInitials(user?.name)}
-                </span>
-              )}
-            </div>
-            <span className="text-gray-800 font-medium text-xs xs:text-sm hidden xs:block">
-              {user?.name || 'User'}
-            </span>
-            
-            <svg
-              className="w-3 h-3 xs:w-4 xs:h-4 text-gray-600  xs:block"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
+  <div className="flex items-center space-x-1 xs:space-x-2 p-1 xs:p-2">
+    {/* User Avatar with fallback to initials */}
+    <div className="w-7 h-7 xs:w-8 xs:h-8 sm:w-10 sm:h-10 rounded-full bg-[#2EB4B4] flex items-center justify-center border-2 border-white shadow">
+      {user?.image ? (
+        <Image
+          src={user.image}
+          alt={user?.name || 'User'}
+          width={40}
+          height={40}
+          className="rounded-full object-cover"
+        />
+      ) : (
+        <span className="text-white font-semibold text-xs xs:text-sm sm:text-base">
+          {getUserInitials(user?.name)}
+        </span>
+      )}
+    </div>
+    <span className="text-gray-800 font-medium text-sm xs:block">
+      {user?.name || 'User'}
+    </span>
+    
+    {/* Dropdown toggle button - only on the SVG icon */}
+    <button 
+      onClick={() => setShowDropdown(!showDropdown)}
+      className="flex items-center justify-center p-1 rounded-md hover:bg-gray-200 transition-colors"
+    >
+      <svg
+        className="w-4 h-4 xs:w-4 xs:h-4 text-gray-600"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2}
+        viewBox="0 0 24 24"
+      >
+        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+      </svg>
+    </button>
+  </div>
 
-          {/* User Dropdown Menu */}
-          {showDropdown && (
-            <div className="absolute right-0 mt-2 w-44 xs:w-48 sm:w-56 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
-              <div className="p-3 xs:p-4 border-b border-gray-200">
-                <p className="font-semibold text-gray-800 text-sm xs:text-base">{user?.name}</p>
-                <p className="text-xs xs:text-sm text-gray-600 truncate">{user?.email}</p>
-              </div>
-              <div className="p-1 xs:p-2">
-                <button className="w-full text-left px-2 xs:px-3 py-2 text-xs xs:text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors">
-                  Profile Settings
-                </button>
-                <button className="w-full text-left px-2 xs:px-3 py-2 text-xs xs:text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors">
-                  My Appointments
-                </button>
-                <button className="w-full text-left px-2 xs:px-3 py-2 text-xs xs:text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors">
-                  Help & Support
-                </button>
-              </div>
-              <div className="p-1 xs:p-2 border-t border-gray-200">
-                <button 
-                  onClick={handleLogout}
-                  className="w-full text-left px-2 xs:px-3 py-2 text-xs xs:text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
-                >
-                  Logout
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
+  {/* User Dropdown Menu */}
+  {showDropdown && (
+    <div className="absolute right-0 mt-2 w-44 xs:w-48 sm:w-56 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+      <div className="p-3 xs:p-4 border-b border-gray-200">
+        <p className="font-semibold text-gray-800 text-sm xs:text-base">{user?.name}</p>
+        <p className="text-xs xs:text-sm text-gray-600 truncate">{user?.email}</p>
+      </div>
+      <div className="p-1 xs:p-2">
+        <button className="w-full text-left px-2 xs:px-3 py-2 text-xs xs:text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors">
+          Profile Settings
+        </button>
+        <button 
+     onClick={handleAppointment}
+     className="w-full text-left px-2 xs:px-3 py-2 text-xs xs:text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors">
+          My Appointments
+        </button>
+        <button className="w-full text-left px-2 xs:px-3 py-2 text-xs xs:text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors">
+          Help & Support
+        </button>
+      </div>
+      <div className="p-1 xs:p-2 border-t border-gray-200">
+        <button 
+          onClick={handleLogout}
+          className="w-full text-left px-2 xs:px-3 py-2 text-xs xs:text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
+        >
+          Logout
+        </button>
+      </div>
+    </div>
+  )}
+</div>
       </div>
     </nav>
   );

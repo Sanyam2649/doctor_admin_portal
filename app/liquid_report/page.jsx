@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/sidebar';
 import Navbar from '../components/navbar';
+import { useSearchParams } from 'next/navigation';
+
 
 // Card component
 function Card({ title, icon, children, className = "" }) {
@@ -21,20 +23,21 @@ function Card({ title, icon, children, className = "" }) {
 }
 
 function Page() {
+  const searchParams = useSearchParams();
   const [dragActive, setDragActive] = useState(false);
   const [appointment, setAppointment] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
   useEffect(() => {
-    // Get appointment data from localStorage
-    const storedAppointment = localStorage.getItem('currentAppointment');
-    if (storedAppointment) {
-      setAppointment(JSON.parse(storedAppointment));
-    }
-  }, []);
+    const report = searchParams.get('report');
+    console.log(report);
+    const parsedReport = JSON.parse(report);
+    
+    setAppointment(parsedReport);
+  }, [searchParams]);
 
-       const toggleSidebar = () => {
+
+    const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
@@ -88,11 +91,28 @@ function Page() {
 
   if (!appointment) {
     return (
-      <div className="flex min-h-screen bg-gray-50">
-        <Sidebar />
-        <div className="flex-1 flex flex-col">
-          <Navbar />
-          <main className="p-8 bg-[#E8EEF3] flex items-center justify-center">
+      <div className="flex min-h-screen bg-[#DEDEDE] overflow-hidden">
+    <div
+      className={`
+        fixed inset-y-0 left-0 z-30 w-64 bg-white shadow-md
+        transform transition-transform duration-300
+        ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
+        lg:translate-x-0
+      `}
+    >
+      <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
+          {isSidebarOpen && (
+      <div
+        onClick={closeSidebar}
+        className="fixed inset-0 bg-black/40 z-20 lg:hidden"
+      />
+    )}
+    </div>
+        <div className="flex-1 flex flex-col lg:ml-64">
+          <div className="fixed top-0 left-0 lg:left-64 right-0 z-20 bg-white shadow-sm h-16 flex items-center">
+        <Navbar onToggleSidebar={toggleSidebar} />
+      </div>
+          <main className="flex-1 overflow-y-auto mt-16 p-4 sm:p-6 lg:p-8">
             <div className="text-center">
               <h2 className="text-xl font-semibold text-gray-800">No report data found</h2>
               <p className="text-gray-500 mt-2">Please select a report from the radiology reports page.</p>
@@ -103,39 +123,70 @@ function Page() {
     );
   }
 
-  return (
-    <div className="flex min-h-screen bg-gray-50">
+return (
+  <div className="flex h-screen bg-[#DEDEDE] overflow-hidden">
+    {/* Sidebar */}
+    <div
+      className={`
+        fixed inset-y-0 left-0 z-30 w-64 bg-white shadow-md
+        transform transition-transform duration-300
+        ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
+        lg:translate-x-0
+      `}
+    >
       <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
-      <div className="flex-1 flex flex-col">
+    </div>
+
+    {/* Overlay for mobile */}
+    {isSidebarOpen && (
+      <div
+        onClick={closeSidebar}
+        className="fixed inset-0 bg-black/40 z-20 lg:hidden"
+      />
+    )}
+
+    {/* Main content area */}
+    <div className="flex-1 flex flex-col lg:ml-64">
+      {/* Navbar */}
+      <div className="fixed top-0 left-0 lg:left-64 right-0 z-20 bg-white shadow-sm h-16 flex items-center">
         <Navbar onToggleSidebar={toggleSidebar} />
-        <main className="p-4 sm:p-6 lg:p-8 bg-[#E8EEF3]">
-          {/* Header Section */}
-          <div className="p-2 mb-4 sm:mb-6">
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-              <div className="flex items-center gap-3 flex-wrap">
-                <h1 className="text-xl sm:text-2xl font-semibold text-gray-800">Lipid Panel</h1>
-                <span className="bg-[#F9C566] text-white text-xs font-semibold px-3 py-1 rounded whitespace-nowrap">
-                  In Progress
-                </span>
-              </div>
-              <div className="text-left lg:text-right">
-                <div className="text-sm font-semibold text-gray-800">Mike Brown Wellness Family Practice</div>
-                <div className="text-xs text-gray-600 hidden sm:block">
-                  70 Washington Square South, New York, NY 10012, United States
-                </div>
-              </div>
-            </div>
-            <div className="mt-2 text-sm text-gray-600 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
-              <span>
-                Patient: <span className="text-[#2EB4B4] font-semibold">
-                  {appointment.patientInfo?.name || appointment.patientName} 
-                  {appointment.patientInfo && ` (${appointment.patientInfo.age}, ${appointment.patientInfo.gender?.charAt(0)})`}
-                </span>
+      </div>
+
+      {/* Scrollable Main Content */}
+      <main className="flex-1 overflow-y-auto mt-16 p-4 sm:p-6 lg:p-8">
+        {/* Header Section */}
+        <div className="p-2 mb-4 sm:mb-6">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div className="flex items-center gap-3 flex-wrap">
+              <h1 className="text-xl sm:text-2xl font-semibold text-gray-800">
+                Lipid Panel
+              </h1>
+              <span className="bg-[#F9C566] text-white text-xs font-semibold px-3 py-1 rounded whitespace-nowrap">
+                In Progress
               </span>
-              <span className="hidden sm:inline">•</span>
-              <span>ReportID: Lab-00{appointment.id}</span>
+            </div>
+            <div className="text-left lg:text-right">
+              <div className="text-sm font-semibold text-gray-800">
+                Mike Brown Wellness Family Practice
+              </div>
+              <div className="text-xs text-gray-600 hidden sm:block">
+                70 Washington Square South, New York, NY 10012, United States
+              </div>
             </div>
           </div>
+          <div className="mt-2 text-sm text-gray-600 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+            <span>
+              Patient:{" "}
+              <span className="text-[#2EB4B4] font-semibold">
+                {appointment?.patientName}
+                {appointment?.patientInfo &&
+                  ` (${appointment.patientInfo.age}, ${appointment.patientInfo.gender?.charAt(0)})`}
+              </span>
+            </span>
+            <span className="hidden sm:inline">•</span>
+            <span>ReportID: Lab-00{appointment.id}</span>
+          </div>
+        </div>
 
           {/* Upload Section */}
           <div

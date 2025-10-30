@@ -14,7 +14,7 @@ const Sidebar = ({ isOpen, onClose }) => {
       label: 'Appointments',
       icon: BriefcaseMedical,
       count: 12,
-      path: '/appointments'
+      path: ['/appointments', '/appointment-details']
     },
     {
       id: 'patient-records',
@@ -28,25 +28,34 @@ const Sidebar = ({ isOpen, onClose }) => {
       label: 'Radiology',
       icon: FlaskConical,
       count: 5,
-      path: '/lab_report'
+      path: ['/lab_report', '/liquid_report']    
     }
   ];
 
   // Set active item based on current route - FIXED version
   useEffect(() => {
-    const currentItem = menuItems.find(item => 
-      pathname === item.path || pathname.startsWith(item.path)
-    );
+    const currentItem = menuItems.find(item => {
+      if (Array.isArray(item.path)) {
+        // Check if current path matches any of the paths in the array
+        return item.path.some(path => pathname === path || pathname.startsWith(path));
+      } else {
+        // Single path check
+        return pathname === item.path || pathname.startsWith(item.path);
+      }
+    });
+    
     if (currentItem) {
       setActiveItem(currentItem.id);
     } else {
-      setActiveItem('appointments');
+      setActiveItem(''); // or set to default item if you have one
     }
   }, [pathname]);
 
   const handleItemClick = (item) => {
     setActiveItem(item.id);
-    router.push(item.path);
+    // Handle array path - use the first path as default
+    const targetPath = Array.isArray(item.path) ? item.path[0] : item.path;
+    router.push(targetPath);
   };
 
   return (
@@ -61,14 +70,13 @@ const Sidebar = ({ isOpen, onClose }) => {
       {/* Sidebar */}
       <div 
         className={`
-          fixed lg:static inset-y-0 left-0 z-50
-          w-64 bg-white shadow-lg border-r border-gray-200 flex flex-col
-          transform transition-transform duration-300 ease-in-out
+          lg:static inset-y-0 left-0 z-50
+          w-full  flex flex-col
           ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
       >
         {/* Header with close button for mobile */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200">
+        <div className="flex items-center justify-between p-3 border-b border-gray-200">
           <div className="flex items-center gap-2">
             <Logo width={40} height={40} />
             <span className="font-bold text-lg text-gray-800">Arogya AI</span>
@@ -92,10 +100,10 @@ const Sidebar = ({ isOpen, onClose }) => {
                 key={item.id}
                 onClick={() => handleItemClick(item)}
                 className={`
-                  flex items-center w-full px-4 py-3
+                  flex items-center w-full px-4 py-3 
                   ${isActive 
-                    ? 'text-[#2EB4B4]  border-l-4 border-[#2EB4B4] shadow-sm' 
-                    : 'hover:bg-gray-50 border border-transparent'
+                    ? 'text-[#2EB4B4]  border-l-4 border-[#2EB4B4] border-b-none' 
+                    : ' border-transparent'
                   }
                 `}
               >
@@ -114,7 +122,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                   <span className={`
                     text-xs rounded-full px-2 py-1 min-w-6 text-center font-semibold
                     ${isActive 
-                      ? 'bg-[#2EB4B4]  text-white' 
+                      ? 'bg-[#2EB4B4] text-white' 
                       : 'bg-gray-100 text-gray-600'
                     }
                   `}>
