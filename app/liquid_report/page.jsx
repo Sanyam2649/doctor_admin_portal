@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Sidebar from '../components/sidebar';
 import Navbar from '../components/navbar';
 import { useSearchParams } from 'next/navigation';
@@ -22,8 +22,8 @@ function Card({ title, icon, children, className = "" }) {
   );
 }
 
-function Page() {
-  const searchParams = useSearchParams();
+function LiquidReportContent() {
+    const searchParams = useSearchParams();
   const [dragActive, setDragActive] = useState(false);
   const [appointment, setAppointment] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -317,6 +317,14 @@ return (
         </main>
       </div>
     </div>
+  );
+}
+
+function Page() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LiquidReportContent />
+    </Suspense>
   );
 }
 
